@@ -50,3 +50,65 @@ are_anagrams( [H|T], Bs) :-
     append( Xs, [H | Ys], Bs),
     append(Xs,Ys,XYs),
     are_anagrams(T,XYs).
+
+% take
+take(0, _ , []).
+take(N, [H | T], [H|TakeT]) :- Nm1 is N-1, take(Nm1, T, TakeT).  
+%take(N, [H | T], [H|TakeT]) :- take(N-1, T, TakeT). % bad b/c "N-1"
+
+% drop N>=length of list
+drop(0, L , L).
+drop(N, [ _ | T], DropT) :- Nm1 is N-1, drop(Nm1, T, DropT). 
+
+% subset
+subset([],[]).
+subset([H|R], [H|S]) :- subset(R,S).
+subset([_|R], S) :- subset(R,S).
+
+% permutation
+permutation([],[]).
+permutation( [H|T] , PHT) :- 
+    permutation(T, PT), 
+    append(A,B,PT), 
+    append(A, [H|B], PHT).
+
+%mergesort
+
+mergesort([],[]).
+mergesort([X],[X]).
+mergesort(List,SList):-
+    length(List,Len),
+    Len>=2,
+    split(List, L, R ),
+    mergesort(L,SL),
+    mergesort(R,SR),
+    merge_lists(SL,SR,SList).
+
+%splitInefficient
+splitInefficient(List,L,R):-
+    length(List,Len),
+    Half is Len//2,
+    take(Half, List,L),
+    drop(Half, List, R).
+
+%split
+split(List,L,R):-
+    length(List,Len),
+    Half is Len//2,
+    splitN(Half,List,L,R).
+
+splitN(0,L,[],L).
+splitN(N,[H|T],[H|LS],R) :- 
+    Nm1 is N-1,
+    splitN(Nm1,T,LS,R).
+
+%merge
+merge_lists(L,[],L).
+merge_lists([],L,L).
+merge_lists([G|S],[H|T], [G|MRest]) :- G =< H, merge_lists(S, [H|T], MRest).
+merge_lists([G|S],[H|T], [H|MRest]) :-  G > H, merge_lists([G|S], T, MRest).
+
+%Can't see entire list?: call following line:
+% set_prolog_flag(answer_write_options,[max_depth(0)]).
+
+
