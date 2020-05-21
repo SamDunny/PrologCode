@@ -1,19 +1,14 @@
-sigma(['0','1']).
-
-%q0, initial state (at 0 index is start)
-
-% delta: (Q x Sigma)-> Q
-delta(Delta) :- Delta =
-    [ [0, 1],
-      [0, 1] ].
-
-accept(Accepting) :- Accepting=[1].
+%:-['dfaEnds1.pl'].
+:-['dfa0Any0.pl'].
 
 %general
 charInd(C,N) :- sigma(Sig), nth0(N,Sig,C).
 
-accepts(String) :- acceptsHelper(0,String).
-
+accepts(String) :- is_list(String), acceptsHelper(0,String).
+accepts(String) :- 
+    \+ is_list(String), 
+    string_chars(String,LString),
+    accepts(LString).
 
 acceptsHelper(State, []) :- 
     accept(Accepting),
@@ -23,4 +18,4 @@ acceptsHelper(StateN, [C|Cs] ) :-
     nth0(StateN,Delta,Nexts),
     charInd(C,N),
     nth0(N,Nexts,NextQ),
-    acceptsHelper(N,Cs).
+    acceptsHelper(NextQ,Cs).
